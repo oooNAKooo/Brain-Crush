@@ -1,9 +1,9 @@
 # Development NFT
 
 ## Содержание
-1. [Введение](#введение)
+1. [Введени](https://github.com/oooNAKooo/Test_README)
    1. [Цель](#цель)
 ##
-2. [Конкретные требования](#конкретные-требования)
+2. [Отчеты о проекте](https://github.com/oooNAKooo/Test_README/tree/main/documentation)
 ##
-3. [Общее описание](#общее-описание)
+3. [Коддинг](https://github.com/oooNAKooo/Test_README/tree/main/Code)
