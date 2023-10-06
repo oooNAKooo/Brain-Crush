@@ -1,8 +1,7 @@
-# Development NFT
+# Brain Crush
 
 ## Содержание
-1. [Введение](https://github.com/oooNAKooo/Test_README)
-   1. [Цель](#цель)
+1. [Главная](https://github.com/oooNAKooo/Test_README)
 ##
 2. [Отчеты о проекте](https://github.com/oooNAKooo/Test_README/tree/main/documentation)
 ##
