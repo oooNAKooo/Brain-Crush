@@ -1,4 +1,4 @@
 # Диаграммы последовательностей
 
-![Диаграмма последовательностей](../../Images/Diagrams/Sequence.png)
+![Диаграмма последовательностей](https://github.com/oooNAKooo/Test_README/blob/main/documentation/Images/Diagrams/Sequence.png)
 
