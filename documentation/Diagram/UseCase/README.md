@@ -1,6 +1,6 @@
 # Диаграмма вариантов использования
 
-![Диаграмма вариантов использования](../../../Images/Diagrams/UseCase.png)
+![Диаграмма вариантов использования](https://github.com/oooNAKooo/Test_README/blob/main/documentation/Images/Diagrams/UseCase.png)
 
 Сценарии для каждого варианта использования описаны в [потоке событий](../UseCase/Flow%20of%20Events.md).
 
