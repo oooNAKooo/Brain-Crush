@@ -1,3 +1,3 @@
 # Диаграмма компонентов
 
-![Диаграмма классов](../../Images/Diagrams/Component.png)
+![Диаграмма классов](https://github.com/oooNAKooo/Test_README/blob/main/documentation/Images/Diagrams/Component.png)
