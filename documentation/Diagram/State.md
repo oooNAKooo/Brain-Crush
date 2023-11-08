@@ -1,3 +1,3 @@
 # Диаграммы состояний
 
-![Добавить напиток ](../../Images/Diagrams/State.png)
+![Добавить напиток ](https://github.com/oooNAKooo/Test_README/blob/main/documentation/Images/Diagrams/State.png)
