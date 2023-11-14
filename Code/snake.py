@@ -69,6 +69,15 @@ class SnakeGame:
 
     def update_display(self):
         self.game_window.fill((0, 0, 0))
+
+        # Отрисовка границ экрана
+        pygame.draw.rect(self.game_window, (255, 255, 255), [0, 0, self.window_width, self.segment_size])
+        pygame.draw.rect(self.game_window, (255, 255, 255), [0, 0, self.segment_size, self.window_height])
+        pygame.draw.rect(self.game_window, (255, 255, 255),
+                         [0, self.window_height - self.segment_size, self.window_width, self.segment_size])
+        pygame.draw.rect(self.game_window, (255, 255, 255),
+                         [self.window_width - self.segment_size, 0, self.segment_size, self.window_height])
+
         self.draw_food()
         self.draw_snake()
         self.show_score(len(self.snake_segments))
