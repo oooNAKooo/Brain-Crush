@@ -1,192 +1,140 @@
-import turtle
-import time
+# snake.py
+import pygame
 import random
+import sys
 
-score = 0
-high_score = 0
-delay = 0.1
+class SnakeGame:
+    def __init__(self):
+        self.window_width = 800
+        self.window_height = 600
+        self.segment_size = 20
+        self.segment_speed = 20
+        self.game_window = pygame.display.set_mode((self.window_width, self.window_height))
+        pygame.display.set_caption('Snake Game')
+        self.clock = pygame.time.Clock()
+        self.font_style = pygame.font.SysFont(None, 50)
+        self.direction = "RIGHT"
+        self.game_over = False
+        self.snake_segments = [(self.window_width / 2, self.window_height / 2)]
+        self.food_position = self.generate_food_position()
 
-# Creating a window screen
-wind = turtle.Screen()
-wind.title("Snake Maze")
-wind.bgcolor("green")
+    def show_score(self, score):
+        score_text = self.font_style.render("Score: " + str(score), True, (255, 255, 255))  # Белый цвет текста
+        self.game_window.blit(score_text, [10, 10])
 
-# the width and height can be put as user's choice
-wind.setup(width=600, height=600)
-wind.tracer(0)
+    def draw_snake(self):
+        for segment in self.snake_segments:
+            pygame.draw.rect(self.game_window, (0, 255, 0), [segment[0], segment[1], self.segment_size, self.segment_size])
 
-# head of the snake
-head = turtle.Turtle()
-head.shape("square")
-head.color("white")
-head.penup()
-head.goto(0, 0)
-head.direction = "Stop"
+    def generate_food_position(self):
+        x = round(random.randrange(0, self.window_width - self.segment_size) / self.segment_size) * self.segment_size
+        y = round(random.randrange(0, self.window_height - self.segment_size) / self.segment_size) * self.segment_size
+        return x, y
 
-# food in the game
-food = turtle.Turtle()
-colors = random.choice(['red', 'green', 'black'])
-shapes = random.choice(['square', 'triangle', 'circle'])
-food.speed(0)
-food.shape(shapes)
-food.color(colors)
-food.penup()
-food.goto(0, 100)
+    def draw_food(self):
+        pygame.draw.rect(self.game_window, (255, 0, 0), [self.food_position[0], self.food_position[1], self.segment_size, self.segment_size])
 
-pen = turtle.Turtle()
-pen.speed(0)
-pen.shape("square")
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 250)
-pen.write("Score : 0  High Score : 0", align="center",
-          font=("Arial", 24, "bold"))
+    def on_key_press(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT and self.direction != "RIGHT":
+                self.direction = "LEFT"
+            elif event.key == pygame.K_RIGHT and self.direction != "LEFT":
+                self.direction = "RIGHT"
+            elif event.key == pygame.K_UP and self.direction != "DOWN":
+                self.direction = "UP"
+            elif event.key == pygame.K_DOWN and self.direction != "UP":
+                self.direction = "DOWN"
 
-# assigning key directions
-def go_up():
-    if head.direction != "down":
-        head.direction = "up"
+    def move(self):
+        x, y = self.snake_segments[0]
+        if self.direction == "UP":
+            y -= self.segment_speed
+        elif self.direction == "DOWN":
+            y += self.segment_speed
+        elif self.direction == "LEFT":
+            x -= self.segment_speed
+        elif self.direction == "RIGHT":
+            x += self.segment_speed
+        self.snake_segments.insert(0, (x, y))
 
-def go_down():
-    if head.direction != "up":
-        head.direction = "down"
+    def check_collision(self):
+        x, y = self.snake_segments[0]
+        if x >= self.window_width or x < 0 or y >= self.window_height or y < 0:
+            self.game_over = True
 
-def go_left():
-    if head.direction != "right":
-        head.direction = "left"
+        if self.snake_segments[0] == self.food_position:
+            self.food_position = self.generate_food_position()
+        else:
+            self.snake_segments.pop()
 
-def go_right():
-    if head.direction != "left":
-        head.direction = "right"
+    def update_display(self):
+        self.game_window.fill((0, 0, 0))
+        self.draw_food()
+        self.draw_snake()
+        self.show_score(len(self.snake_segments))
+        pygame.display.update()
 
-def move():
-    if head.direction == "up":
-        y = head.ycor()
-        head.sety(y+20)
-    if head.direction == "down":
-        y = head.ycor()
-        head.sety(y-20)
-    if head.direction == "left":
-        x = head.xcor()
-        head.setx(x-20)
-    if head.direction == "right":
-        x = head.xcor()
-        head.setx(x+20)
+    def game_over_screen(self):
+        game_over_text = self.font_style.render("Game Over", True, (255, 255, 255))
+        self.game_window.blit(game_over_text, [self.window_width / 4, self.window_height / 2])
+        pygame.display.update()
 
-def handle_keypress():
-    wind.listen()
-    wind.onkeypress(go_up, "w")
-    wind.onkeypress(go_down, "s")
-    wind.onkeypress(go_left, "a")
-    wind.onkeypress(go_right, "d")
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        return
 
-# Set up key bindings
-handle_keypress()
+    def game_loop(self):
+        while not self.game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.game_over = True
+                else:
+                    self.on_key_press(event)
 
-def spawn_food():
-    x = random.randint(-270, 270)
-    y = random.randint(-270, 270)
-    food.goto(x, y)
+            self.move()
+            self.check_collision()
+            self.update_display()
 
-# Main Gameplay
-def game_loop():
-    global score, high_score, delay
-    wind.update()
+            self.clock.tick(self.segment_speed)
 
-    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
-        time.sleep(1)
-        head.goto(0, 0)
-        head.direction = "Stop"
-        for segment in segments:
-            segment.goto(1000, 1000)
-        segments.clear()
-        score = 0
-        delay = 0.1
-        pen.clear()
-        pen.write("Score : {} High Score : {} ".format(
-            score, high_score), align="center", font=("Arial", 24, "bold"))
+        self.game_over_screen()
+        pygame.quit()
 
-    if head.distance(food) < 20:
-        spawn_food()
-        create_segment()
-        update_score()
+    def start_menu(self):
+        intro = True
+        while intro:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        intro = False
 
-    handle_collision()
-    move_segments()
-    move_head()
+            self.game_window.fill((0, 0, 0))
+            start_text = self.font_style.render("Press SPACE to Play", True, (255, 255, 255))
+            self.game_window.blit(start_text, [self.window_width / 4, self.window_height / 2])
+            pygame.display.update()
 
-    wind.ontimer(game_loop, int(delay * 1000))
+        self.game_loop()
 
-def create_segment():
-    new_segment = turtle.Turtle()
-    new_segment.speed(0)
-    new_segment.shape("square")
-    new_segment.color("orange")
-    new_segment.penup()
-    segments.append(new_segment)
+    def run(self):
+        self.start_menu()
 
-def update_score():
-    global score, high_score, delay
-    score += 10
-    if score > high_score:
-        high_score = score
-    pen.clear()
-    pen.write("Score : {} High Score : {} ".format(
-        score, high_score), align="center", font=("Arial", 24, "bold"))
-    delay -= 0.001
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                else:
+                    self.on_key_press(event)
 
-def handle_collision():
-    for segment in segments:
-        if segment.distance(head) < 20:
-            game_over()
+            self.on_key_press(pygame.event)
 
-def move_segments():
-    for index in range(len(segments) - 1, 0, -1):
-        x = segments[index - 1].xcor()
-        y = segments[index - 1].ycor()
-        segments[index].goto(x, y)
-
-    if len(segments) > 0:
-        x = head.xcor()
-        y = head.ycor()
-        segments[0].goto(x, y)
-
-def move_head():
-    if head.direction == "up":
-        y = head.ycor()
-        head.sety(y + 20)
-    elif head.direction == "down":
-        y = head.ycor()
-        head.sety(y - 20)
-    elif head.direction == "left":
-        x = head.xcor()
-        head.setx(x - 20)
-    elif head.direction == "right":
-        x = head.xcor()
-        head.setx(x + 20)
-
-def game_over():
-    time.sleep(1)
-    head.goto(0, 0)
-    head.direction = "Stop"
-    for segment in segments:
-        segment.goto(1000, 1000)
-    segments.clear()
-
-    score = 0
-    delay = 0.1
-    pen.clear()
-    pen.write("Score : {} High Score : {} ".format(
-        score, high_score), align="center", font=("Arial", 24, "bold"))
-
-# Initial setup
-segments = []
-
-# Initial spawn
-spawn_food()
-
-# Start game loop
-game_loop()
-
-wind.mainloop()
+if __name__ == "__main__":
+    SnakeGame().run()
