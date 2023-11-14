@@ -166,14 +166,11 @@ class BrainCrushApp:
             TicTacToeApp(self.root, self.db, lambda: self.show_game_menu(username))
 
         def snake_clicked():
-            # Реализуйте запуск игры "змейка" здесь
-            pass
+            self.start_snake_game()
 
         def sudoku_clicked():
             # Реализуйте запуск игры "судоку" здесь
             pass
-
-        # def main_menu():
 
         def exit_clicked():
             self.root.destroy()
@@ -193,6 +190,9 @@ class BrainCrushApp:
         exit_button = tk.Button(game_menu_frame, text="Выйти из программы", command=exit_clicked)
         exit_button.pack(pady=10)
 
+    def start_snake_game(self):
+        snake_game = SnakeGame()
+        snake_game.run()
 
 if __name__ == "__main__":
     root = tk.Tk()
