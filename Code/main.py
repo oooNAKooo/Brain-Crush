@@ -169,8 +169,7 @@ class BrainCrushApp:
             self.start_snake_game()
 
         def sudoku_clicked():
-            # Реализуйте запуск игры "судоку" здесь
-            pass
+            self.start_sudoku_game()
 
         def exit_clicked():
             self.root.destroy()
@@ -193,6 +192,10 @@ class BrainCrushApp:
     def start_snake_game(self):
         snake_game = SnakeGame()
         snake_game.run()
+
+    def start_sudoku_game(self):
+        sudoku_game = SudokuGame(self.root, self.show_main_menu)
+        sudoku_game.draw_board()
 
 if __name__ == "__main__":
     root = tk.Tk()
