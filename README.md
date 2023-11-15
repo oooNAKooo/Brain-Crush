@@ -14,3 +14,5 @@
   2.4. [Изображения диаграмм](https://github.com/oooNAKooo/Test_README/tree/main/documentation/Images/Diagrams)
 ##
 3. [Коддинг](https://github.com/oooNAKooo/Test_README/tree/main/Code)
+
+  3.1. [Тесты](https://github.com/oooNAKooo/Test_README/tree/main/Code/Test)
