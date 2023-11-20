@@ -1,4 +1,4 @@
-# Brain Crush
+# Brain-Crush
 
 ## Содержание
 1. [Главная](https://github.com/oooNAKooo/Test_README)
