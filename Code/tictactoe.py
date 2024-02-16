@@ -49,7 +49,8 @@ class TicTacToeGame:
 
 
 class TicTacToeApp:
-    def __init__(self, root, db, show_game_menu_callback):
+    def __init__(self, root, db, show_game_menu_callback, username):
+        self.username = username
         self.root = root
         self.db = db
         self.show_game_menu_callback = show_game_menu_callback
@@ -71,14 +72,29 @@ class TicTacToeApp:
         for i in range(3):
             for j in range(3):
                 button = tk.Button(self.frame, text="", font=("Arial", 20), width=5, height=2,
-                                   command=lambda row=i, col=j: self.make_move(row, col))
+                                   command=lambda row=i, col=j: self.make_move(row, col, self.username))
                 button.grid(row=i, column=j, padx=5, pady=5)
                 self.buttons[i][j] = button
 
-    def make_move(self, row, col):
+    def make_move(self, row, col, username):
         if self.game.make_move(row * 3 + col):
             self.update_board()
-            if not self.game.check_winner():
+            winner = self.game.check_winner()
+            if winner:
+                if winner == "ничья":
+                    messagebox.showinfo("Ничья!", "Игра окончена, ничья!")
+                else:
+                    messagebox.showinfo("Победитель!", f"Игра окончена, победил игрок {winner}!")
+                    # Обновляем статистику побед для текущего игрока
+                    if winner == "X":
+                        current_wins = self.db.get_tic_tac_toe_score(username)
+                        updated_wins = current_wins + 1
+                        self.db.update_tic_tac_toe_wins(username, updated_wins)
+                    else:
+                        current_wins = self.db.get_tic_tac_toe_score(username)
+                        self.db.update_tic_tac_toe_wins(username, current_wins)
+                self.root.after(1000, self.game_window.destroy)  # Закрываем окно через 1 секунду
+            else:
                 self.root.after(500, self.computer_move)
 
     def computer_move(self):
@@ -89,17 +105,7 @@ class TicTacToeApp:
             self.update_board()
 
     def update_board(self):
-        winner = self.game.check_winner()
-
-        if winner:
-            if winner == "ничья":
-                messagebox.showinfo("Ничья!", "Игра окончена, ничья!")
-            else:
-                messagebox.showinfo("Победитель!", f"Игра окончена, победил игрок {winner}!")
-
-            self.show_game_menu_callback()
-        else:
-            for i in range(3):
-                for j in range(3):
-                    value = self.game.board[i * 3 + j]
-                    self.buttons[i][j].config(text=value)
+        for i in range(3):
+            for j in range(3):
+                value = self.game.board[i * 3 + j]
+                self.buttons[i][j].config(text=value)
