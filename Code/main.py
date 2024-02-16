@@ -1,11 +1,13 @@
 # main.py
 import tkinter as tk
-from tkinter import messagebox
 import pygame
+from tkinter import messagebox
 from database import Database
 from tictactoe import TicTacToeApp
 from admin import AdminApp
 from snake import SnakeGame
+from sudoku import SudokuGame  # Импортируем класс SudokuGame из файла sudoku.py
+from statistics_window import StatisticsWindow  # Импорт класса StatisticsWindow
 
 # Инициализация Pygame
 pygame.init()
@@ -174,6 +176,9 @@ class BrainCrushApp:
         def exit_clicked():
             self.root.destroy()
 
+        def statistic_clicked():
+            self.show_statistics(username)
+
         tic_tac_toe_button = tk.Button(game_menu_frame, text="Крестики-нолики", command=tic_tac_toe_clicked)
         tic_tac_toe_button.pack(pady=10)
 
@@ -183,11 +188,17 @@ class BrainCrushApp:
         sudoku_button = tk.Button(game_menu_frame, text="Судоку", command=sudoku_clicked)
         sudoku_button.pack(pady=10)
 
+        statistics_button = tk.Button(game_menu_frame, text="Статистика", command=statistic_clicked)
+        statistics_button.pack(pady=10)
+
         back_button = tk.Button(game_menu_frame, text="Вернуться в главное меню", command=self.show_main_menu)
         back_button.pack(pady=10)
 
         exit_button = tk.Button(game_menu_frame, text="Выйти из программы", command=exit_clicked)
         exit_button.pack(pady=10)
+    
+    def show_statistics(self, username):
+        StatisticsWindow(self.root, self.db, username, lambda: self.show_game_menu_callback)
 
     def start_snake_game(self):
         snake_game = SnakeGame()
