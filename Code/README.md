@@ -2,9 +2,11 @@
 
 Папка с файлами кода приложения.
 
+[audio](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/audio) - папка со звуковым аккомпанементом для игры "Гонки";
+
 [images](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/images) - папка с картинками для игры "Гонки";
 
-[resources](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/resources) - папка с картинками для игры "Динозавр";
+[resources](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/resources) - папка с ресурсами для игры "Динозавр";
 
 [textfile](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/textfile) -  папка с лучшим рекордом в игре "Гонки";;
 
@@ -33,9 +35,11 @@
 
 Folder with application code files.
 
+[audio](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/audio) - folder with sound accompaniment for the game "Racing";
+
 [images](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/images) - folder with pictures for the game "Racing";
 
-[resources](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/resources) - folder with pictures for the game "Dinosaur";
+[resources](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/resources) - folder with resources for the game "Dinosaur";
 
 [textfile](https://github.com/oooNAKooo/Brain-Crush/tree/main/Code/textfile) - folder with the best record in the game "Racing";;
 
