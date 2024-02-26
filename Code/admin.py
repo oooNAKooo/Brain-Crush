@@ -7,7 +7,7 @@ from database import Database
 class AdminApp:
     def __init__(self, root, db, back_callback):
         self.root = root
-        self.db = db  # Используйте переданный объект Database
+        self.db = db 
         self.back_callback = back_callback
 
         self.show_admin_menu()
@@ -47,58 +47,62 @@ class AdminApp:
             messagebox.showinfo("Список профилей", profiles_text)
 
         def show_stats_profiles_window(self):
-        profiles = self.db.get_all_users()
-        if not profiles:
-            messagebox.showinfo("Информация", "Нет доступных профилей для просмотра!")
-            self.show_admin_menu()
-            return
-
-        for widget in self.root.winfo_children():
-            widget.destroy()
-
-        stats_profile_frame = tk.Frame(self.root)
-        stats_profile_frame.pack()
-
-        title_label = tk.Label(stats_profile_frame, text="Режим администратора", font=("Arial", 30))
-        title_label.pack(pady=20)
-
-        username_label = tk.Label(stats_profile_frame, text="Выберите профиль для просмотра:")
-        username_label.pack()
-
-        profile_names = [profile[1] for profile in profiles]
-
-        selected_profile = tk.StringVar(value=profile_names[0])
-
-        profiles_menu = tk.OptionMenu(stats_profile_frame, selected_profile, *profile_names)
-        profiles_menu.pack(pady=10)
-
-        def stats_profile():
-            username_to_show = selected_profile.get()
-            user_data = self.db.get_user(username_to_show)
-
-            if not user_data:
-                messagebox.showinfo("Ошибка", f"Профиль {username_to_show} не найден!")
+            profiles = self.db.get_all_users()
+            if not profiles:
+                messagebox.showinfo("Информация", "Нет доступных профилей для просмотра!")
+                self.show_admin_menu()
                 return
-
-            # Извлекаем данные профиля
-            username = user_data[1]
-            snake_score = user_data[4]
-            tic_tac_toe_wins = user_data[3]
-            sudoku_solved = user_data[5]
-
-            # Формируем текст статистики
-            stats_text = f"Имя пользователя: {username}\n" \
-                         f"Очки в змейку: {snake_score}\n" \
-                         f"Победы в крестики-нолики: {tic_tac_toe_wins}\n" \
-                         f"Решенные судоку: {sudoku_solved}"
-
-            messagebox.showinfo("Статистика профиля", stats_text)
-
-        delete_button = tk.Button(stats_profile_frame, text="Просмотреть профиль", command=stats_profile)
-        delete_button.pack(pady=20)
-
-        back_button = tk.Button(stats_profile_frame, text="Назад", command=self.show_admin_menu)
-        back_button.pack(pady=10)
+    
+            for widget in self.root.winfo_children():
+                widget.destroy()
+    
+            stats_profile_frame = tk.Frame(self.root)
+            stats_profile_frame.pack()
+    
+            title_label = tk.Label(stats_profile_frame, text="Режим администратора", font=("Arial", 30))
+            title_label.pack(pady=20)
+    
+            username_label = tk.Label(stats_profile_frame, text="Выберите профиль для просмотра:")
+            username_label.pack()
+    
+            profile_names = [profile[1] for profile in profiles]
+    
+            selected_profile = tk.StringVar(value=profile_names[0])
+    
+            profiles_menu = tk.OptionMenu(stats_profile_frame, selected_profile, *profile_names)
+            profiles_menu.pack(pady=10)
+    
+            def stats_profile():
+                username_to_show = selected_profile.get()
+                user_data = self.db.get_user(username_to_show)
+    
+                if not user_data:
+                    messagebox.showinfo("Ошибка", f"Профиль {username_to_show} не найден!")
+                    return
+    
+                # Извлекаем данные профиля
+                username = user_data[1]
+                snake_score = user_data[4]
+                tic_tac_toe_wins = user_data[3]
+                sudoku_solved = user_data[5]
+                race_score = user_data[6]
+                dino_score = user_data[7]
+    
+                # Формируем текст статистики
+                stats_text = f"Имя пользователя: {username}\n" \
+                             f"Очки в змейку: {snake_score}\n" \
+                             f"Победы в крестики-нолики: {tic_tac_toe_wins}\n" \
+                             f"Решенные судоку: {sudoku_solved}\n" \
+                             f"Рекорд в динозавре: {dino_score}\n" \
+                             f"Рекорд в гонках: {race_score}"
+    
+                messagebox.showinfo("Статистика профиля", stats_text)
+    
+            delete_button = tk.Button(stats_profile_frame, text="Просмотреть профиль", command=stats_profile)
+            delete_button.pack(pady=20)
+    
+            back_button = tk.Button(stats_profile_frame, text="Назад", command=self.show_admin_menu)
+            back_button.pack(pady=10)
 
     def show_delete_profile_window(self):
         profiles = self.db.get_all_users()
