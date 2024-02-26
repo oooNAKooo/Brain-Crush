@@ -86,12 +86,13 @@ class TicTacToeApp:
                 else:
                     messagebox.showinfo("Победитель!", f"Игра окончена, победил игрок {winner}!")
                     # Обновляем статистику побед для текущего игрока
+                    current_wins = self.db.get_tic_tac_toe_score(username)
+                    if current_wins is None:
+                        current_wins = 0
                     if winner == "X":
-                        current_wins = self.db.get_tic_tac_toe_score(username)
                         updated_wins = current_wins + 1
                         self.db.update_tic_tac_toe_wins(username, updated_wins)
                     else:
-                        current_wins = self.db.get_tic_tac_toe_score(username)
                         self.db.update_tic_tac_toe_wins(username, current_wins)
                 self.root.after(1000, self.game_window.destroy)  # Закрываем окно через 1 секунду
             else:
