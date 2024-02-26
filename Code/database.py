@@ -42,6 +42,18 @@ class Database:
         self.cursor.execute('UPDATE users SET sudoku_solved = ? WHERE username = ?', (solved_count, username))
         self.conn.commit()
 
+    def get_dino_score(self, username):
+        self.cursor.execute('SELECT dino_score FROM users WHERE username = ?', (username,))
+        return self.cursor.fetchone()[0]  # возвращает рекорд забега
+
+    def get_race_score(self, username):
+        self.cursor.execute('SELECT race_score FROM users WHERE username = ?', (username,))
+        return self.cursor.fetchone()[0]
+
+    def get_snake_score(self, username):
+        self.cursor.execute('SELECT snake_score FROM users WHERE username = ?', (username,))
+        return self.cursor.fetchone()[0]
+
     def get_tic_tac_toe_score(self, username):
         self.cursor.execute('SELECT tic_tac_toe_wins FROM users WHERE username = ?', (username,))
         return self.cursor.fetchone()[0]  # возвращает количество побед в крестики-нолики
