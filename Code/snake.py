@@ -4,7 +4,9 @@ import random
 import sys
 
 class SnakeGame:
-    def __init__(self):
+    def __init__(self, db, username):
+        self.db = db
+        self.username = username
         self.window_width = 800
         self.window_height = 600
         self.segment_size = 20
@@ -17,6 +19,7 @@ class SnakeGame:
         self.game_over = False
         self.snake_segments = [(self.window_width / 2, self.window_height / 2)]
         self.food_position = self.generate_food_position()
+        self.score = 0  # Добавляем атрибут score и инициализируем его
 
     def show_score(self, score):
         score_text = self.font_style.render("Score: " + str(score), True, (255, 255, 255))  # Белый цвет текста
@@ -83,7 +86,8 @@ class SnakeGame:
         self.show_score(len(self.snake_segments))
         pygame.display.update()
 
-    def game_over_screen(self):
+    def game_over_screen(self, username, score):
+        self.update_record(username, len(self.snake_segments))
         game_over_text = self.font_style.render("Game Over", True, (255, 255, 255))
         self.game_window.blit(game_over_text, [self.window_width / 4, self.window_height / 2])
         pygame.display.update()
@@ -96,6 +100,9 @@ class SnakeGame:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         return
+
+        # Пользователь возвращается в меню
+        self.start_menu()
 
     def game_loop(self):
         while not self.game_over:
@@ -111,7 +118,13 @@ class SnakeGame:
 
             self.clock.tick(self.segment_speed)
 
-        self.game_over_screen()
+        # После выхода из игры, проверяем, был ли пользовательский ввод для выхода из программы
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pygame.quit()
+                sys.exit()
+
+        self.game_over_screen(self.username, self.score)
         pygame.quit()
 
     def start_menu(self):
@@ -133,6 +146,7 @@ class SnakeGame:
         self.game_loop()
 
     def run(self):
+        pygame.init()
         self.start_menu()
 
         running = True
@@ -143,7 +157,24 @@ class SnakeGame:
                 else:
                     self.on_key_press(event)
 
-            self.on_key_press(pygame.event)
+            if not self.game_over:
+                self.on_key_press(pygame.event)
+
+        pygame.quit()  # После выхода из цикла закрываем pygame, но не выходим из программы
+
+    def update_record(self, username, score):
+        try:
+            # Получаем текущий рекорд пользователя из базы данных
+            current_record = self.db.get_snake_score(username)
+            if current_record is None:
+                current_record = 0
+
+            # Сравниваем текущий рекорд с новым счетом и обновляем его, если новый счет выше
+            if score > current_record:
+                self.db.update_snake_score(username, score)
+        except Exception as e:
+            print("Error updating record:", e)
+
 
 if __name__ == "__main__":
     SnakeGame().run()
