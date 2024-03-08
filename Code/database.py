@@ -1,22 +1,9 @@
-# database.py
 import sqlite3
-
 
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect('users.db')
         self.cursor = self.conn.cursor()
-    
-    def create_users_table(self):
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                                id INTEGER PRIMARY KEY,
-                                username TEXT NOT NULL UNIQUE,
-                                password TEXT NOT NULL,
-                                snake_score INTEGER DEFAULT 0,
-                                tic_tac_toe_wins INTEGER DEFAULT 0,
-                                sudoku_solved INTEGER DEFAULT 0
-                            )''')
-        self.conn.commit()
 
     def add_user(self, username, password):
         self.cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
@@ -25,10 +12,6 @@ class Database:
     def get_user(self, username):
         self.cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         return self.cursor.fetchone()
-
-    def get_all_users(self):
-        self.cursor.execute('SELECT * FROM users')
-        return self.cursor.fetchall()
 
     def update_snake_score(self, username, score):
         self.cursor.execute('UPDATE users SET snake_score = ? WHERE username = ?', (score, username))
@@ -42,9 +25,25 @@ class Database:
         self.cursor.execute('UPDATE users SET sudoku_solved = ? WHERE username = ?', (solved_count, username))
         self.conn.commit()
 
+    def update_dino_score(self, username, score):
+        self.cursor.execute('UPDATE users SET dino_score = ? WHERE username = ?', (score, username))
+        self.conn.commit()
+
+    def update_race_score(self, username, kilo):
+        self.cursor.execute('UPDATE users SET race_score = ? WHERE username = ?', (kilo, username))
+        self.conn.commit()
+
+    def get_tic_tac_toe_score(self, username):
+        self.cursor.execute('SELECT tic_tac_toe_wins FROM users WHERE username = ?', (username,))
+        return self.cursor.fetchone()[0]  # возвращает количество побед в крестики-нолики
+
+    def get_sudoku_score(self, username):
+        self.cursor.execute('SELECT sudoku_solved FROM users WHERE username = ?', (username,))
+        return self.cursor.fetchone()[0]
+
     def get_dino_score(self, username):
         self.cursor.execute('SELECT dino_score FROM users WHERE username = ?', (username,))
-        return self.cursor.fetchone()[0]  # возвращает рекорд забега
+        return self.cursor.fetchone()[0]
 
     def get_race_score(self, username):
         self.cursor.execute('SELECT race_score FROM users WHERE username = ?', (username,))
@@ -54,11 +53,10 @@ class Database:
         self.cursor.execute('SELECT snake_score FROM users WHERE username = ?', (username,))
         return self.cursor.fetchone()[0]
 
-    def get_tic_tac_toe_score(self, username):
-        self.cursor.execute('SELECT tic_tac_toe_wins FROM users WHERE username = ?', (username,))
-        return self.cursor.fetchone()[0]  # возвращает количество побед в крестики-нолики
+    def get_all_users(self):
+        self.cursor.execute('SELECT * FROM users')
+        return self.cursor.fetchall()
 
-    
     def delete_user(self, username):
         self.cursor.execute('DELETE FROM users WHERE username = ?', (username,))
         self.conn.commit()
