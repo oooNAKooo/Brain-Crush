@@ -13,12 +13,12 @@ class StatisticsWindow(tk.Toplevel):
         self.label = tk.Label(self, text=f"Статистика игр для пользователя {username}", font=("Arial", 14))
         self.label.pack(pady=10)
 
-        self.snake_button = tk.Button(self, text="Змейка", command=self.show_snake_statistics)
-        self.snake_button.pack(pady=5)
-
         self.tic_tac_toe_button = tk.Button(self, text="Крестики-нолики", command=self.show_tic_tac_toe_statistics)
         self.tic_tac_toe_button.pack(pady=5)
-
+        
+        self.snake_button = tk.Button(self, text="Змейка", command=self.show_snake_statistics)
+        self.snake_button.pack(pady=5)
+        
         self.sudoku_button = tk.Button(self, text="Судоку", command=self.show_sudoku_statistics)
         self.sudoku_button.pack(pady=5)
 
