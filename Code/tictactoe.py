@@ -53,7 +53,6 @@ class TicTacToeApp:
         self.username = username
         self.root = root
         self.db = db
-        self.show_game_menu_callback = show_game_menu_callback
 
         # Создаем новое окно для игры
         self.game_window = tk.Toplevel(root)
