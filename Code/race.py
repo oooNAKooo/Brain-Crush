@@ -2,10 +2,12 @@ import pygame
 import time
 import random
 import os
+import re
 
-
-class RaceGame():
-    def __init__(self):
+class RaceGame:
+    def __init__(self, db, username):
+        self.db = db
+        self.username = username
         screen_width = 400
         screen_height = 600
 
@@ -62,9 +64,17 @@ class RaceGame():
             game_layout_display.blit(speed, (screen_width - 125, 0))
 
         def high_score_update(dodged):
-            high_scores = open(os.getcwd() + '\\textfile/high_score.txt', 'w')
-            temperd = str(dodged)
-            high_scores.write(temperd)
+            try:
+                new_record = int(dodged)
+                    # Получаем текущий рекорд пользователя из базы данных
+                current_record = self.db.get_race_score(username)
+                if current_record is None:
+                    current_record = 0
+                # Сравниваем текущий рекорд с новым счетом и обновляем его, если новый счет выше
+                if new_record > current_record:
+                    self.db.update_race_score(username, new_record)
+            except Exception as e:
+                print("Error updating record:", e)
 
         def things(th_x, th_y):
             game_layout_display.blit(photo_obstacle, (th_x, th_y))
@@ -251,7 +261,7 @@ class RaceGame():
                 th_st_y += th_speed
                 car(width_x, height_y, direction)
 
-                things_dodged(dodg, high_score, th_speed)
+                things_dodged(dodg, self.db.get_race_score(username), th_speed)
                 if width_x > screen_width - c_width or width_x < 0:
                     crash_function()
                 if th_st_y > screen_height:
