@@ -7,7 +7,7 @@ from admin import AdminApp
 from snake import SnakeGame
 from dino import DinoGame
 from race import RaceGame
-from sudoku import SudokuGame  # Импортируем класс SudokuGame из файла sudoku.py
+from sudoku import SudokuGame, SudokuApp  # Импортируем класс SudokuGame из файла sudoku.py
 from statistics_window import StatisticsWindow  # Импорт класса StatisticsWindow
 
 # Инициализация Pygame перед созданием объекта BrainCrushApp
@@ -176,13 +176,13 @@ class BrainCrushApp:
             self.start_snake_game(username)
 
         def sudoku_clicked():
-            self.start_sudoku_game()
+            self.start_sudoku_game(username)
 
         def dino_clicked():
-            self.start_dino_game()
+            self.start_dino_game(username)
 
         def race_clicked():
-            self.start_race_game()
+            self.start_race_game(username)
 
         def exit_clicked():
             self.root.destroy()
@@ -217,19 +217,18 @@ class BrainCrushApp:
     def show_statistics(self, username):
         StatisticsWindow(self.root, self.db, username, lambda: self.show_game_menu_callback)
 
-    def start_sudoku_game(self):
-        sudoku_game = SudokuGame(self.root, self.show_main_menu)
-        sudoku_game.draw_board()
+    def start_sudoku_game(self, username):
+        SudokuApp(self.root, self.db, username, lambda: self.show_main_menu())
 
     def start_snake_game(self, username):
         snake_game = SnakeGame(self.db, username)
         snake_game.run()
 
-    def start_dino_game(self):
-        DinoGame(self, self.root, self.db, self.username)
+    def start_dino_game(self, username):
+        DinoGame(self.root, self.db, username)
 
-    def start_race_game(self):
-        RaceGame()
+    def start_race_game(self, username):
+        RaceGame(self.db, username)
 
 
 if __name__ == "__main__":
