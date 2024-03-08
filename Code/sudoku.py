@@ -1,10 +1,16 @@
+# sudoku.py
 import tkinter as tk
+from database import Database
 from tkinter import messagebox
 
 class SudokuGame:
-    def __init__(self, parent, show_rules_func):
+    def __init__(self, parent, root, show_rules_func, db, username, back_callback):
         self.parent = parent
         self.show_rules_func = show_rules_func
+        self.db = db
+        self.root = root
+        self.username = username
+        self.back_callback = back_callback
 
         # Создание и отрисовка игрового поля
         self.board = [
@@ -55,8 +61,11 @@ class SudokuGame:
                 if j % 3 == 0 and j > 0:
                     cell_entry.grid(padx=(10, 0))
 
-        check_button = tk.Button(frame, text="Check", command=self.check_solution, font=("Arial", 16))
+        check_button = tk.Button(frame, text="Тест", command=self.check_solution, font=("Arial", 16))
         check_button.grid(row=9, column=4, pady=20)
+
+        back_button = tk.Button(frame, text="Назад", command=self.back_to_game_menu, font=("Arial", 16))
+        back_button.grid(row=10, column=4, pady=20)
 
     def check_solution(self):
         user_solution = []
@@ -69,11 +78,16 @@ class SudokuGame:
 
         if any(any(val != 0 for val in row) for row in user_solution):
             if self.is_solution_valid(user_solution):
-                messagebox.showinfo("Congratulations!", "You solved the Sudoku puzzle!")
+                messagebox.showinfo("Поздравляем", "Вы правильно решили Судоку !")
+                current_wins = self.db.get_sudoku_score(self.username)
+                if current_wins is None:
+                    current_wins = 0
+                updated_wins = current_wins + 1
+                self.db.update_sudoku_solved(self.username, updated_wins)
             else:
-                messagebox.showerror("Incorrect Solution", "Your solution is incorrect. Please try again.")
+                messagebox.showerror("Неправильное решение", "Ваше решение неверное. Пожалуйста, попробуйте ещё.")
         else:
-            messagebox.showerror("No Input", "Please fill in at least one cell before checking.")
+            messagebox.showerror("Нет данных", "Пожалуйста, заполните хотя бы одну ячейку перед проверкой.")
 
     def is_solution_valid(self, solution):
         # Проверка по строкам и столбцам
@@ -100,12 +114,23 @@ class SudokuGame:
                 seen.add(num)
         return True
 
+    def back_to_game_menu(self):
+        self.parent.destroy()  # Закрываем окно с игрой
+        self.back_callback()   # Возвращаемся в меню с выбором игр
 
-class BrainCrushApp:
-    def __init__(self, root):
+class SudokuApp:
+    def __init__(self, root, db, username, back_callback):
         self.root = root
-        self.root.title("Brain Crush")
-        self.root.geometry("800x600")
+        self.db = db
+        self.username = username
+        self.back_callback = back_callback
+
+        self.game_window = tk.Toplevel(root)
+        self.game_window.title("Судоку")
+        self.game_window.geometry("1600x600")
+
+        self.frame = tk.Frame(self.game_window)
+        self.frame.grid(row=0, column=0, padx=10, pady=10)  # Используем grid для фрейма
 
         # Показываем правила игры перед началом игры
         self.show_rules()
@@ -118,20 +143,23 @@ class BrainCrushApp:
             "2. Заполните все ячейки, чтобы завершить игру."
         )
 
-        rules_label = tk.Label(self.root, text=rules_text, font=("Arial", 18), justify="left")
-        rules_label.pack(padx=20, pady=20)
+        rules_label = tk.Label(self.frame, text=rules_text, font=("Arial", 18), justify="left")
+        rules_label.grid(row=0, column=0, padx=20, pady=20)
 
-        start_button = tk.Button(self.root, text="Начать игру", command=self.start_sudoku_game, font=("Arial", 16))
-        start_button.pack(pady=20)
+        start_button = tk.Button(self.frame, text="Начать игру", command=self.start_sudoku_game, font=("Arial", 16))
+        start_button.grid(row=1, column=0, pady=20)
 
     def start_sudoku_game(self):
         # Удаляем правила и начинаем игру
-        for widget in self.root.winfo_children():
+        for widget in self.frame.winfo_children():
             widget.destroy()
-        sudoku_game = SudokuGame(self.root, self.show_rules)
+        SudokuGame(self.game_window, self.root, self.show_rules, self.db, self.username, self.back_to_game_menu)
 
+    def back_to_game_menu(self):
+        self.game_window.destroy()  # Закрываем окно с игрой
+        self.back_callback()        # Возвращаемся в меню с выбором игр
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = BrainCrushApp(root)
+    SudokuApp(root, Database(), lambda: print("Back to game menu"))
     root.mainloop()
